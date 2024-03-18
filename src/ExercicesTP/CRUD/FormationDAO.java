@@ -35,7 +35,7 @@ public class FormationDAO implements FormationDaoCRUD {
 
     public void deleteFormation(int id) {
         try {
-            st.executeUpdate("DELETE FROM formation WHERE Id = " + id);
+            st.executeUpdate("DELETE FROM formation WHERE IdF = " + id);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +44,7 @@ public class FormationDAO implements FormationDaoCRUD {
     public void updateFormation(Formation formation) {
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("UPDATE formation SET titre = ?, datef = ?, lieu = ?, certification = ? WHERE Id = ?");
+            ps = con.prepareStatement("UPDATE formation SET titre = ?, datef = ?, lieu = ?, certif = ? WHERE IdF = ?");
             ps.setString(1, formation.getTitle());
             ps.setDate(2, formation.getDateF());
             ps.setString(3, formation.getLieu());

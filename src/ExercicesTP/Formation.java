@@ -2,6 +2,8 @@ package ExercicesTP;
 
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class Formation {
     public int Id;
@@ -57,4 +59,13 @@ public class Formation {
         this.lieu = lieu;
     }
 
+    public static java.sql.Date parseDateToSqlDate(String date) {
+        java.util.Date dateUtil = null;
+        try {
+            dateUtil = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return new java.sql.Date(dateUtil.getTime());
+    }
 }

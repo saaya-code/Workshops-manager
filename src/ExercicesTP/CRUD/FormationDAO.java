@@ -41,6 +41,15 @@ public class FormationDAO implements FormationDaoCRUD {
         }
     }
 
+    public ResultSet selection(String req){
+        try{
+            PreparedStatement ps = con.prepareStatement(req);
+            return ps.executeQuery();
+        } catch (SQLException e) {
+            System.out.println("Erreur sql + "+ e.getMessage());
+            return null;
+        }
+    }
     public void updateFormation(Formation formation) {
         PreparedStatement ps = null;
         try {

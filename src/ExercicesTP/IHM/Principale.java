@@ -1,5 +1,6 @@
 package ExercicesTP.IHM;
 
+import ExercicesTP.CRUD.FormationDAO;
 import TP_Base.Config;
 import TP_Base.MyConnexion;
 
@@ -27,9 +28,8 @@ public class Principale extends JFrame {
     JMenuItem menuItemRechercherFormation;
     JMenuItem menuItemAfficherFormation;
     JDesktopPane desktop;
-    Connection con = null;
+    FormationDAO formationDao;
     Principale() {
-        con = MyConnexion.getConnection(Config.URL, Config.USERNAME, Config.PASSWORD);
         menuBar = new JMenuBar();
         this.setTitle("Gestion des formation");
         this.setSize(1000, 900);
@@ -71,20 +71,28 @@ public class Principale extends JFrame {
         menuBar.add(menuEnseignant);
         this.setJMenuBar(menuBar);
         this.setVisible(true);
-
+        formationDao = new FormationDAO();
         // listenners
         menuItemAjouteurFormation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                IHMAjoutFormation ihmAjout = new IHMAjoutFormation();
+                IHMAjoutFormation ihmAjout = new IHMAjoutFormation(formationDao);
                 desktop.add(ihmAjout);
             }
         });
         menuItemRechercherFormation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                IHMRechercheFormation ihmRecherche = new IHMRechercheFormation();
+                IHMRechercheFormation ihmRecherche = new IHMRechercheFormation(formationDao);
                 desktop.add(ihmRecherche);
+            }
+        });
+
+        menuItemAfficherFormation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                IHMAffichageFormation ihmAffichage = new IHMAffichageFormation(formationDao);
+                desktop.add(ihmAffichage);
             }
         });
 

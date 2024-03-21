@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import ExercicesTP.CRUD.FormationDAO;
 import ExercicesTP.Formation;
 
-public class IHMAjoutFormation extends JFrame {
+public class IHMAjoutFormation extends JInternalFrame {
 
     private JLabel referenceLabel, titleLabel, dateLabel, lieuLabel, certificationLabel;
     private JTextField referenceField, titleField;
@@ -17,16 +17,16 @@ public class IHMAjoutFormation extends JFrame {
     private JCheckBox certificationCheckbox;
     private JButton addButton, cancelButton;
     public FormationDAO formationDAO;
-    public IHMAjoutFormation() {
+    public IHMAjoutFormation(FormationDAO dao) {
         super("Ajout d'une formation");
         initializeComponents();
         createLayout();
         addEventListeners();
-        formationDAO = new FormationDAO();
+        formationDAO = dao;
         this.setVisible(true);
     }
 
-    private void initializeComponents() {
+    public void initializeComponents() {
         referenceLabel = new JLabel("Référence :");
         titleLabel = new JLabel("Titre :");
         dateLabel = new JLabel("Date :");
@@ -37,7 +37,7 @@ public class IHMAjoutFormation extends JFrame {
         titleField = new JTextField(20);
 
         // Sample data for comboboxes (replace with actual data source)
-         dateTextField = new JTextField(15);
+        dateTextField = new JTextField(15);
         lieuTextField = new JTextField(15);
 
         certificationCheckbox = new JCheckBox();
@@ -74,7 +74,6 @@ public class IHMAjoutFormation extends JFrame {
 
         getContentPane().add(panel);
         setSize(500,250);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
@@ -106,15 +105,20 @@ public class IHMAjoutFormation extends JFrame {
             java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
             String lieu = lieuTextField.getText();
             boolean certification = certificationCheckbox.isSelected();
-            formationDAO.addFormation(new Formation(reference, title, sqlStartDate, lieu, certification));
+
+            try {
+                formationDAO.addFormation(new Formation(reference, title, sqlStartDate, lieu, certification));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de la formation");
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, "Formation ajoutée avec succès");
             dispose();
         });
 
         cancelButton.addActionListener(e -> dispose());
     }
 
-    public static void main(String[] args) {
-        new IHMAjoutFormation();
-    }
+
 
 }

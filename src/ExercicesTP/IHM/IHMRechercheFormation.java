@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import ExercicesTP.CRUD.FormationDAO;
 import ExercicesTP.Formation;
 
-public class IHMRechercheFormation extends JFrame {
+public class IHMRechercheFormation extends JInternalFrame {
 
     private JLabel referenceLabel, titleLabel, dateLabel, lieuLabel, certificationLabel;
     private JTextField referenceField, titleField;
@@ -17,12 +17,12 @@ public class IHMRechercheFormation extends JFrame {
     private JCheckBox certificationCheckbox;
     private JButton rechercheButton, cancelButton, modifierButton, supprimerButton;
     public FormationDAO formationDAO;
-    public IHMRechercheFormation() {
-        super("Ajout d'une formation");
+    public IHMRechercheFormation(FormationDAO dao) {
+        super("Recherche d'une formation");
         initializeComponents();
         createLayout();
         addEventListeners();
-        formationDAO = new FormationDAO();
+        formationDAO = dao;
         this.setVisible(true);
     }
 
@@ -74,9 +74,12 @@ public class IHMRechercheFormation extends JFrame {
         getContentPane().add(panel);
         getContentPane().add(panel2);
         getContentPane().setLayout(new FlowLayout());
+        modifierButton.setEnabled(false);
+        supprimerButton.setEnabled(false);
+        rechercheButton.setEnabled(false);
+
 
         setSize(500,250);
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
@@ -95,7 +98,11 @@ public class IHMRechercheFormation extends JFrame {
         dateTextField.setText("");
         lieuTextField.setText("");
         certificationCheckbox.setSelected(false);
+        supprimerButton.setEnabled(false);
+        modifierButton.setEnabled(false);
+        rechercheButton.setEnabled(false);
     }
+
     private void addEventListeners() {
         rechercheButton.addActionListener(e -> {
             Formation formation = formationDAO.getFormation(Integer.parseInt(referenceField.getText()));
@@ -125,6 +132,24 @@ public class IHMRechercheFormation extends JFrame {
 
         });
 
+        referenceField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if(referenceField.getText().isEmpty()) return;
+                Formation formation = formationDAO.getFormation(Integer.parseInt(referenceField.getText()));
+                if (formation != null) {
+                    modifierButton.setEnabled(true);
+                    supprimerButton.setEnabled(true);
+                } else {
+                    modifierButton.setEnabled(false);
+                    supprimerButton.setEnabled(false);
+                }
+            }
+        });
+        referenceField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                rechercheButton.setEnabled(!referenceField.getText().isEmpty());
+            }
+        });
     }
 
 

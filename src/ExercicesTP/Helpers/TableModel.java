@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TableModel extends AbstractTableModel {
     ArrayList<Object[]> data;
@@ -22,11 +23,7 @@ public class TableModel extends AbstractTableModel {
         this.dao = dao;
         try {
             rsmd = rs.getMetaData();
-            Object[] ligne = new Object[rsmd.getColumnCount()];
-            for (int i = 0; i < rsmd.getColumnCount(); i++) {
-                ligne[i] = rsmd.getColumnName(i+1);
-            }
-            data.add(ligne);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +33,6 @@ public class TableModel extends AbstractTableModel {
                 Object[] ligne = new Object[rsmd.getColumnCount()];
                 for(int i = 0;i<rsmd.getColumnCount();i++){
                     ligne[i] = rs.getObject(i+1);
-                    System.out.println(ligne[i]);
                 }
                 data.add(ligne);
             }
@@ -45,6 +41,27 @@ public class TableModel extends AbstractTableModel {
         }
 
 
+    }
+
+    public void updateTableWithNewResultSet(ResultSet rs){
+        data = new ArrayList<Object[]>();
+        try {
+            rsmd = rs.getMetaData();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            while (rs.next()) {
+                Object[] ligne = new Object[rsmd.getColumnCount()];
+                for(int i = 0;i<rsmd.getColumnCount();i++){
+                    ligne[i] = rs.getObject(i+1);
+                }
+                data.add(ligne);
+            }
+        }catch(SQLException SQLErr){
+            System.out.println("Error "+SQLErr);
+        }
+        fireTableDataChanged();
     }
 
 
@@ -78,7 +95,7 @@ public class TableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return !getColumnName(columnIndex).equalsIgnoreCase("id");
+        return false;
     }
     int colmunNameToIndex(String colmunName){
         for (int i = 0; i < getColumnCount(); i++) {
@@ -88,39 +105,25 @@ public class TableModel extends AbstractTableModel {
         }
         return -1;
     }
+    Boolean stringToBool(String str){
+        return str.equalsIgnoreCase("true");
+    }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        int id = (int) data.get(rowIndex)[colmunNameToIndex("id")];
-        String titre = (String) data.get(rowIndex)[colmunNameToIndex("titre")];
-        Date dateF = (Date) data.get(rowIndex)[colmunNameToIndex("DateF")];
-        String lieu = (String) data.get(rowIndex)[colmunNameToIndex("lieu")];
-        boolean certification = (boolean) data.get(rowIndex)[colmunNameToIndex("certification")];
-        switch (getColumnName(columnIndex)){
-            case "titre": titre = (String) aValue;
-                break;
-            case "datef": dateF = (Date) aValue;
-                break;
-            case "lieu": lieu = (String) aValue;
-                break;
-            case "certification": certification = (boolean) aValue;
-
-        }
-        dao.updateFormation(new Formation(id, titre, dateF, lieu, certification));
-        data.get(rowIndex)[columnIndex] = aValue;
-
     }
+
 
     public void insertFormation(int id, String titre, Date dateF, String lieu, boolean certification){
         this.dao.addFormation(new Formation(id, titre, dateF, lieu,certification));
-            data.add(new Object[]{id, titre, dateF, lieu, certification});
-            fireTableDataChanged();
-            JOptionPane.showMessageDialog(null, "done");
+        data.add(new Object[]{id, titre, dateF, lieu, certification});
+        fireTableDataChanged();
+        JOptionPane.showMessageDialog(null, "done");
     }
 
 
 
-    public void supprimerFromation(int id){
+    public void supprimerFormation(int id){
         int option = JOptionPane.showConfirmDialog(null, "est ce que vous etes sure ?");
         if(option == JOptionPane.NO_OPTION || option == JOptionPane.CANCEL_OPTION){
             JOptionPane.showMessageDialog(null, "annulé");

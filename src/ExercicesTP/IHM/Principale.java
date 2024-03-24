@@ -53,6 +53,7 @@ public class Principale extends JFrame {
         menuItemAjouteurEtudiant = new JMenuItem("Ajouteur");
         menuItemRechercherEtudiant = new JMenuItem("Rechercher");
         menuItemAfficherEtudiant = new JMenuItem("Afficher");
+
         menuEtudiant.add(menuItemAjouteurEtudiant);
         menuEtudiant.add(menuItemRechercherEtudiant);
         menuEtudiant.add(menuItemAfficherEtudiant);
@@ -93,6 +94,14 @@ public class Principale extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 IHMAffichageFormation ihmAffichage = new IHMAffichageFormation(formationDao);
                 desktop.add(ihmAffichage);
+            }
+        });
+
+        menuItemAjouteurEtudiant.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                IHMAjoutEtudiant ihmAjoutEtud = new IHMAjoutEtudiant();
+                desktop.add(ihmAjoutEtud);
             }
         });
 

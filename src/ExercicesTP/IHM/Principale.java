@@ -1,6 +1,8 @@
 package ExercicesTP.IHM;
 
+import ExercicesTP.CRUD.EtudiantDAO;
 import ExercicesTP.CRUD.FormationDAO;
+import ExercicesTP.Etudiant;
 import TP_Base.Config;
 import TP_Base.MyConnexion;
 
@@ -29,6 +31,7 @@ public class Principale extends JFrame {
     JMenuItem menuItemAfficherFormation;
     JDesktopPane desktop;
     FormationDAO formationDao;
+    EtudiantDAO etudiantDAO;
     Principale() {
         menuBar = new JMenuBar();
         this.setTitle("Gestion des formation");
@@ -73,6 +76,7 @@ public class Principale extends JFrame {
         this.setJMenuBar(menuBar);
         this.setVisible(true);
         formationDao = new FormationDAO();
+        etudiantDAO = new EtudiantDAO();
         // listenners
         menuItemAjouteurFormation.addActionListener(new ActionListener() {
             @Override
@@ -100,7 +104,7 @@ public class Principale extends JFrame {
         menuItemAjouteurEtudiant.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                IHMAjoutEtudiant ihmAjoutEtud = new IHMAjoutEtudiant();
+                IHMAjoutEtudiant ihmAjoutEtud = new IHMAjoutEtudiant(etudiantDAO);
                 desktop.add(ihmAjoutEtud);
             }
         });

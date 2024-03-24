@@ -1,4 +1,7 @@
 package ExercicesTP.IHM;
+import ExercicesTP.CRUD.EtudiantDAO;
+import ExercicesTP.Etudiant;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,15 +10,16 @@ public class IHMAjoutEtudiant extends JInternalFrame{
     public JTextField nomField, prenomField, numEtdField;
     public JComboBox<String> filiereComboBox;
     public JComboBox<Integer> niveauComboBox, groupeComboBox;
-
+    public EtudiantDAO dao;
     public JButton addButton, cancelButton;
-    public IHMAjoutEtudiant(){
+    public IHMAjoutEtudiant(EtudiantDAO dao){
         setTitle("Ajout d'un étudiant");
         setSize(400, 400);
         initializeComponents();
         createLayout();
-        //addEventListeners();
+        addEventListeners();
         setVisible(true);
+        this.dao = dao;
     }
     private void addComponent(JPanel panel, JComponent component, GridBagConstraints c, int x, int y, int width, int height) {
         c.gridx = x;
@@ -67,6 +71,34 @@ public class IHMAjoutEtudiant extends JInternalFrame{
         addComponent(panel, addButton, c, 0, 6, 1, 1);
         addComponent(panel, cancelButton, c, 1, 6, 1, 1);
         add(panel);
+    }
+    public void emptyForm(){
+        nomField.setText("");
+        prenomField.setText("");
+        numEtdField.setText("");
+        filiereComboBox.setSelectedIndex(0);
+        niveauComboBox.setSelectedIndex(0);
+        groupeComboBox.setSelectedIndex(0);
+    }
+    public void addEventListeners(){
+        addButton.addActionListener((e)->{
+            // Get the values from the form
+            String nom = nomField.getText();
+            String prenom = prenomField.getText();
+            int numEtd = Integer.parseInt(numEtdField.getText());
+            String filiere = (String) filiereComboBox.getSelectedItem();
+            int niveau = (int) niveauComboBox.getSelectedItem();
+            int groupe = (int) groupeComboBox.getSelectedItem();
+            Etudiant etudiant = new Etudiant(numEtd, nom, prenom, filiere, niveau, groupe);
+            dao.addEtudiant(etudiant);
+            JOptionPane.showMessageDialog(this, "Etudiant ajouté avec succès");
+            emptyForm();
+        });
+
+        cancelButton.addActionListener((e)->{
+            emptyForm();
+            dispose();
+        });
     }
 
 }

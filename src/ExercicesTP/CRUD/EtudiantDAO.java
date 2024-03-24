@@ -6,7 +6,10 @@ import TP_Base.MyConnexion;
 
 import java.sql.*;
 
+
+// TODO: Test this class
 public class EtudiantDAO implements EtudiantDaoCRUD{
+
 
     Connection con = null;
     Statement st = null;

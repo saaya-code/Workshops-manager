@@ -1,7 +1,6 @@
 package ExercicesTP.Helpers;
 
-import ExercicesTP.CRUD.FormationDAO;
-import ExercicesTP.Formation;
+import ExercicesTP.CRUD.EtudiantDAO;
 
 
 import javax.swing.*;
@@ -11,14 +10,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class TableModel extends AbstractTableModel {
+public class TableModelDemande extends AbstractTableModel {
     ArrayList<Object[]> data;
     ResultSetMetaData rsmd;
-    FormationDAO dao;
+    EtudiantDAO dao;
 
-    public TableModel(ResultSet rs, FormationDAO dao){
+    public TableModelDemande(ResultSet rs, EtudiantDAO dao){
         data = new ArrayList<Object[]>();
         this.dao = dao;
         try {
@@ -114,8 +112,8 @@ public class TableModel extends AbstractTableModel {
     }
 
 
-    public void insertFormation(int id, String titre, Date dateF, String lieu, boolean certification){
-        this.dao.addFormation(new Formation(id, titre, dateF, lieu,certification));
+    public void insertFormation(String nom, String lieu, Date date){
+        this.dao.addEtudiant(new Formation(id, titre, dateF, lieu,certification));
         data.add(new Object[]{id, titre, dateF, lieu, certification});
         fireTableDataChanged();
         JOptionPane.showMessageDialog(null, "done");
@@ -131,14 +129,14 @@ public class TableModel extends AbstractTableModel {
         }
 
         this.dao.deleteFormation(id);
-            for(int i = 0; i < data.size(); i++){
-                if((int)data.get(i)[colmunNameToIndex("id")] == id){
-                    data.remove(i);
-                    fireTableDataChanged();
-                    JOptionPane.showMessageDialog(null, "done");
-                    return;
-                }
+        for(int i = 0; i < data.size(); i++){
+            if((int)data.get(i)[colmunNameToIndex("id")] == id){
+                data.remove(i);
+                fireTableDataChanged();
+                JOptionPane.showMessageDialog(null, "done");
+                return;
             }
+        }
 
     }
 }

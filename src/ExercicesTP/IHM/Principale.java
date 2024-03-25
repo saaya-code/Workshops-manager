@@ -3,7 +3,7 @@ package ExercicesTP.IHM;
 import ExercicesTP.CRUD.EtudiantDAO;
 import ExercicesTP.CRUD.FormationDAO;
 import ExercicesTP.Etudiant;
-import TP_Base.Config;
+import ExercicesTP.Config;
 import TP_Base.MyConnexion;
 
 import javax.swing.*;
@@ -32,6 +32,8 @@ public class Principale extends JFrame {
     JDesktopPane desktop;
     FormationDAO formationDao;
     EtudiantDAO etudiantDAO;
+    Connection con = null;
+
     Principale() {
         menuBar = new JMenuBar();
         this.setTitle("Gestion des formation");
@@ -40,7 +42,7 @@ public class Principale extends JFrame {
 
         desktop = new JDesktopPane();
         this.add(desktop);
-
+        con = MyConnexion.getConnection(Config.URL, Config.USERNAME, Config.PASSWORD);
         menuFormation = new JMenu("Formation");
         menuEtudiant = new JMenu("Etudiant");
         menuEnseignant = new JMenu("Enseignant");
@@ -75,8 +77,8 @@ public class Principale extends JFrame {
         menuBar.add(menuEnseignant);
         this.setJMenuBar(menuBar);
         this.setVisible(true);
-        formationDao = new FormationDAO();
-        etudiantDAO = new EtudiantDAO();
+        formationDao = new FormationDAO(con);
+        etudiantDAO = new EtudiantDAO(con);
         // listenners
         menuItemAjouteurFormation.addActionListener(new ActionListener() {
             @Override
@@ -106,6 +108,13 @@ public class Principale extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 IHMAjoutEtudiant ihmAjoutEtud = new IHMAjoutEtudiant(etudiantDAO);
                 desktop.add(ihmAjoutEtud);
+            }
+        });
+        menuItemRechercherEtudiant.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                IHMRechercheEtudiant ihmRechercheEtud = new IHMRechercheEtudiant(etudiantDAO);
+                desktop.add(ihmRechercheEtud);
             }
         });
 

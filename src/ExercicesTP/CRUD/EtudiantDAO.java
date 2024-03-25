@@ -7,20 +7,21 @@ import TP_Base.MyConnexion;
 import java.sql.*;
 
 
-// TODO: Test this class
 public class EtudiantDAO implements EtudiantDaoCRUD{
 
 
-    Connection con = null;
     Statement st = null;
-    public EtudiantDAO() {
-        con = MyConnexion.getConnection(Config.URL, Config.USERNAME, Config.PASSWORD);
+    Connection con = null;
+
+    public EtudiantDAO(Connection con) {
         try {
             st = con.createStatement();
+            this.con = con;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void addEtudiant(Etudiant etudiant) {
         PreparedStatement ps = null;
@@ -76,7 +77,7 @@ public class EtudiantDAO implements EtudiantDaoCRUD{
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Etudiant(rs.getInt("id"), rs.getString("nom"), rs.getString("prenom"), rs.getString("filiere"), rs.getInt("niveau"), rs.getInt("groupe"));
-            }else{
+            } else {
                 return null;
             }
         } catch (SQLException e) {
@@ -97,6 +98,7 @@ public class EtudiantDAO implements EtudiantDaoCRUD{
             return etudiants;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+
         }
     }
 

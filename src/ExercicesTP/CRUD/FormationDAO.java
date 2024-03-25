@@ -1,8 +1,6 @@
 package ExercicesTP.CRUD;
 
 import ExercicesTP.Formation;
-import ExercicesTP.Config;
-import TP_Base.MyConnexion;
 import ExercicesTP.interfaces.FormationDaoCRUD;
 import java.sql.*;
 
@@ -10,10 +8,10 @@ public class FormationDAO implements FormationDaoCRUD {
 
     Connection con = null;
     Statement st = null;
-    public FormationDAO() {
-        con = MyConnexion.getConnection(Config.URL, Config.USERNAME, Config.PASSWORD);
+    public FormationDAO(Connection con){
         try {
-            st = con.createStatement();
+        this.con = con;
+        st = con.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

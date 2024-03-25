@@ -2,7 +2,7 @@ package ExercicesTP.IHM;
 
 import javax.swing.*;
 import ExercicesTP.CRUD.FormationDAO;
-import ExercicesTP.Helpers.TableModel;
+import ExercicesTP.Helpers.TableModelFormation;
 
 import java.awt.*;
 
@@ -12,7 +12,7 @@ public class IHMAffichageFormation extends JInternalFrame {
     private JCheckBox certificationCheckbox;
     private JButton rechercheButton, cancelButton, modifierButton, supprimerButton;
     public FormationDAO formationDAO;
-    public TableModel model;
+    public TableModelFormation model;
     JTable jt_Formation;
 
 
@@ -35,7 +35,7 @@ public class IHMAffichageFormation extends JInternalFrame {
 
         jt_Formation = new JTable();
         String rq = "SELECT * FROM FORMATION;";
-        model = new TableModel(formationDAO.selection(rq), formationDAO);
+        model = new TableModelFormation(formationDAO.selection(rq), formationDAO);
         jt_Formation.setModel(model);
 
 

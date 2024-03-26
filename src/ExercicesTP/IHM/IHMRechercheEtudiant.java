@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import ExercicesTP.CRUD.EtudiantDAO;
+import ExercicesTP.Helpers.TableModelEtudiant;
 import ExercicesTP.Helpers.TableModelFormation;
 
 public class IHMRechercheEtudiant extends JInternalFrame {
@@ -13,16 +14,17 @@ public class IHMRechercheEtudiant extends JInternalFrame {
     private  JComboBox<String> filiereComboBox,demandesBox;
     private JComboBox<Integer> niveauComboBox, groupeComboBox;
     private JButton ajouterDemandeButton, supprimerDemandeButton, rechercheButton, cancelButton, modifierButton, supprimerButton;
-    public EtudiantDAO etudiantDAO;
-    public TableModelFormation model;
+    public EtudiantDAO dao;
+    public TableModelEtudiant model;
     JTable jt_Etudiant;
 
     public IHMRechercheEtudiant(EtudiantDAO dao) {
-        super("Recherche d'une formation");
+
+        super("Recherche d'un etudiant");
+        this.dao = dao;
         initializeComponents();
         createLayout();
         addEventListeners();
-        this.etudiantDAO = dao;
         this.setVisible(true);
     }
 
@@ -55,7 +57,7 @@ public class IHMRechercheEtudiant extends JInternalFrame {
         listeDemandesLabel = new JLabel("Liste des demandes :");
         jt_Etudiant = new JTable();
         String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) ;";
-        model = new TableModelFormation(etudiantDAO.selection(rq), etudiantDAO);
+        model = new TableModelEtudiant(dao.selection(rq), dao);
         jt_Etudiant.setModel(model);
 
     }
@@ -90,7 +92,9 @@ public class IHMRechercheEtudiant extends JInternalFrame {
         addComponent(panel, demandesBox, c, 2,7,1, 1);
 
         addComponent(panel, listeDemandesLabel, c, 0, 10, 1, 1);
-        addComponent(panel, jt_Etudiant, c, 2, 10, 6, 1);
+        JScrollPane scrollPane = new JScrollPane(jt_Etudiant);
+
+        addComponent(panel, scrollPane, c, 2, 10, 6, 1);
 
         // Add buttons
         getContentPane().add(panel);
@@ -98,7 +102,7 @@ public class IHMRechercheEtudiant extends JInternalFrame {
         getContentPane().setLayout(new FlowLayout());
         modifierButton.setEnabled(false);
         supprimerButton.setEnabled(false);
-        rechercheButton.setEnabled(false);
+        //rechercheButton.setEnabled(false);
 
 
 
@@ -121,6 +125,11 @@ public class IHMRechercheEtudiant extends JInternalFrame {
 
     private void addEventListeners() {
        //TODO implement
+        rechercheButton.addActionListener(e -> {
+            String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) ;";
+            model.updateTableWithNewResultSet(dao.selection(rq));
+
+        });
     }
 
 

@@ -1,7 +1,7 @@
 package ExercicesTP.Helpers;
 
 import ExercicesTP.CRUD.EtudiantDAO;
-
+import ExercicesTP.Etudiant;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -11,12 +11,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class TableModelDemande extends AbstractTableModel {
+
+public class TableModelEtudiant extends AbstractTableModel {
     ArrayList<Object[]> data;
     ResultSetMetaData rsmd;
     EtudiantDAO dao;
 
-    public TableModelDemande(ResultSet rs, EtudiantDAO dao){
+    public TableModelEtudiant(ResultSet rs, EtudiantDAO dao){
         data = new ArrayList<Object[]>();
         this.dao = dao;
         try {
@@ -40,6 +41,7 @@ public class TableModelDemande extends AbstractTableModel {
 
 
     }
+
 
     public void updateTableWithNewResultSet(ResultSet rs){
         data = new ArrayList<Object[]>();
@@ -112,9 +114,10 @@ public class TableModelDemande extends AbstractTableModel {
     }
 
 
-    public void insertFormation(String nom, String lieu, Date date){
-        this.dao.addEtudiant(new Formation(id, titre, dateF, lieu,certification));
-        data.add(new Object[]{id, titre, dateF, lieu, certification});
+    public void insertDemande(int idFormation, int idEtudiant){
+        this.dao.insertDemande(idFormation, idEtudiant);
+        Object[] ligne = this.dao.fetchFormationData(idFormation, idEtudiant);
+        data.add(ligne);
         fireTableDataChanged();
         JOptionPane.showMessageDialog(null, "done");
     }
@@ -127,8 +130,7 @@ public class TableModelDemande extends AbstractTableModel {
             JOptionPane.showMessageDialog(null, "annulé");
             return;
         }
-
-        this.dao.deleteFormation(id);
+        this.dao.deleteEtudiant(id);
         for(int i = 0; i < data.size(); i++){
             if((int)data.get(i)[colmunNameToIndex("id")] == id){
                 data.remove(i);

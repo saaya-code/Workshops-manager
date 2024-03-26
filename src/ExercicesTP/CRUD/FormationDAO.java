@@ -39,6 +39,9 @@ public class FormationDAO implements FormationDaoCRUD {
         }
     }
 
+
+
+
     public ResultSet selection(String req){
         try{
             PreparedStatement ps = con.prepareStatement(req);

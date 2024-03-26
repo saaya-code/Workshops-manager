@@ -1,5 +1,6 @@
 package ExercicesTP.Helpers;
 
+import ExercicesTP.CRUD.EtudiantDAO;
 import ExercicesTP.CRUD.FormationDAO;
 import ExercicesTP.Formation;
 

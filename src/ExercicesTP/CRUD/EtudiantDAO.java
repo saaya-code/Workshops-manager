@@ -112,4 +112,40 @@ public class EtudiantDAO implements EtudiantDaoCRUD{
             throw new RuntimeException(e);
         }
     }
+
+    public Object[] fetchFormationData(int idFormation, int idEtudiant){
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT f.titre, f.lieu, f.datef FROM formation f,Etudiant e,demandeetd d WHERE f.IdF=d.IdFormation and e.id=d.IdEtudiant and f.IdF = ? and e.id = ?");
+            ps.setInt(1, idFormation);
+            ps.setInt(2, idEtudiant);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Object[]{rs.getString(2), rs.getDate(3), rs.getString(4)};
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        return null;
+    }
+
+    public void insertDemande(int idFormation, int idEtudiant){
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("INSERT INTO demandeetd (IdFormation, IdEtudiant) VALUES (?,?)");
+            ps.setInt(1, idFormation);
+            ps.setInt(2, idEtudiant);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet selection(String rq){
+        try {
+            return st.executeQuery(rq);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
 }

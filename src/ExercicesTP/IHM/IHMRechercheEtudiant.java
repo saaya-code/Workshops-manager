@@ -2,8 +2,12 @@ package ExercicesTP.IHM;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import ExercicesTP.CRUD.EtudiantDAO;
+import ExercicesTP.Etudiant;
 import ExercicesTP.Helpers.TableModelEtudiant;
 import ExercicesTP.Helpers.TableModelFormation;
 
@@ -16,8 +20,8 @@ public class IHMRechercheEtudiant extends JInternalFrame {
     private JButton ajouterDemandeButton, supprimerDemandeButton, rechercheButton, cancelButton, modifierButton, supprimerButton;
     public EtudiantDAO dao;
     public TableModelEtudiant model;
-    JTable jt_Etudiant;
-
+    public JTable jt_Etudiant;
+    public JScrollPane sp;
     public IHMRechercheEtudiant(EtudiantDAO dao) {
 
         super("Recherche d'un etudiant");
@@ -37,7 +41,7 @@ public class IHMRechercheEtudiant extends JInternalFrame {
         groupeLabel = new JLabel("Groupe :");
         listeDemandesLabel = new JLabel("Liste des demandes :");
 
-        numEtdField = new JTextField(15);
+        numEtdField = new JTextField(20);
         nomField = new JTextField(20);
         prenomField = new JTextField(20);
 
@@ -56,53 +60,72 @@ public class IHMRechercheEtudiant extends JInternalFrame {
         demandesBox = new JComboBox<String>();
         listeDemandesLabel = new JLabel("Liste des demandes :");
         jt_Etudiant = new JTable();
-        String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) ;";
+        String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and 5=7;";
         model = new TableModelEtudiant(dao.selection(rq), dao);
         jt_Etudiant.setModel(model);
+        sp = new JScrollPane(jt_Etudiant);
 
     }
 
     private void createLayout() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        JPanel panel2 = new JPanel(new GridBagLayout());
+        this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+        JPanel p1 = new JPanel(new FlowLayout());
+        JPanel p2 = new JPanel(new FlowLayout());
+        JPanel p3 = new JPanel(new FlowLayout());
+        JPanel p4 = new JPanel(new FlowLayout());
+        JPanel p5 = new JPanel(new FlowLayout());
+        JPanel p6 = new JPanel(new FlowLayout());
+        JPanel p7 = new JPanel(new FlowLayout());
+        JPanel p8 = new JPanel(new FlowLayout());
+        p1.add(numEtdLabel);
+        p1.add(numEtdField);
+        p1.add(rechercheButton);
 
-        // Add labels and corresponding components
-        c.fill = GridBagConstraints.HORIZONTAL;
-        addComponent(panel, numEtdLabel, c, 0, 0, 1, 1);
-        addComponent(panel, numEtdField, c, 1, 0, 2, 1);
-        addComponent(panel, nomLabel, c, 0, 1, 1, 1);
-        addComponent(panel, nomField, c, 1, 1, 2, 1);
-        addComponent(panel, prenomLabel, c, 0, 2, 1, 1);
-        addComponent(panel, prenomField, c, 1, 2, 2, 1);
-        addComponent(panel, filiereLabel, c, 0, 3, 1, 1);
-        addComponent(panel, filiereComboBox, c, 1, 3, 2, 1);
-        addComponent(panel, niveauLabel, c, 0, 4, 1, 1);
-        addComponent(panel, niveauComboBox, c, 1, 4, 1, 1);
-        addComponent(panel, groupeLabel, c, 0, 5, 1, 1);
-        addComponent(panel, groupeComboBox, c, 1, 5, 1, 1);
+        p2.add(nomLabel);
+        p2.add(nomField);
+        p2.add(modifierButton);
 
-        addComponent(panel2, rechercheButton, c, 5, 0, 1, 1);
-        addComponent(panel2, modifierButton, c, 5, 1, 1, 1);
-        addComponent(panel2, supprimerButton, c, 5, 2, 1, 1);
-        addComponent(panel2, cancelButton, c, 5, 3, 1, 1);
+        p3.add(prenomLabel);
+        p3.add(prenomField);
+        p3.add(supprimerButton);
 
-        addComponent(panel, ajouterDemandeButton, c, 0, 7, 1, 1);
-        addComponent(panel, supprimerDemandeButton, c, 1, 7, 1, 1);
-        addComponent(panel, demandesBox, c, 2,7,1, 1);
+        p4.add(filiereLabel);
+        p4.add(filiereComboBox);
+        p4.add(cancelButton);
 
-        addComponent(panel, listeDemandesLabel, c, 0, 10, 1, 1);
-        JScrollPane scrollPane = new JScrollPane(jt_Etudiant);
+        p5.add(niveauLabel);
+        p5.add(niveauComboBox);
 
-        addComponent(panel, scrollPane, c, 2, 10, 6, 1);
+        p6.add(groupeLabel);
+        p6.add(groupeComboBox);
 
-        // Add buttons
-        getContentPane().add(panel);
-        getContentPane().add(panel2);
-        getContentPane().setLayout(new FlowLayout());
-        modifierButton.setEnabled(false);
-        supprimerButton.setEnabled(false);
-        //rechercheButton.setEnabled(false);
+        p7.add(ajouterDemandeButton);
+        p7.add(supprimerDemandeButton);
+        p7.add(demandesBox);
+
+        p8.add(listeDemandesLabel);
+        p8.add(sp);
+
+        this.add(p1);
+        this.add(p2);
+        this.add(p3);
+        this.add(p4);
+        this.add(p5);
+        this.add(p6);
+        this.add(p7);
+        this.add(p8);
+        ResultSet rs = dao.selection("SELECT titre FROM FORMATION;");
+        try {
+            while(rs.next()){
+                String titre = rs.getString(1);
+                demandesBox.addItem(titre);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+            }
+
+
+
 
 
 
@@ -120,16 +143,50 @@ public class IHMRechercheEtudiant extends JInternalFrame {
     }
 
     private void clearInputs() {
-      //TODO implement
+          numEtdField.setText("");
+            nomField.setText("");
+            prenomField.setText("");
+            filiereComboBox.setSelectedIndex(0);
+            niveauComboBox.setSelectedIndex(0);
+            groupeComboBox.setSelectedIndex(0);
+
     }
 
     private void addEventListeners() {
        //TODO implement
         rechercheButton.addActionListener(e -> {
-            String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) ;";
+            String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and e.id = "+numEtdField.getText()+";";
             model.updateTableWithNewResultSet(dao.selection(rq));
+            String rq2 = "SELECT nom,prenom,filiere,niveau,groupe FROM ETUDIANT WHERE id = "+numEtdField.getText()+";";
+            ResultSet rs = dao.selection(rq2);
+            try {
+                if (rs.next()) {
+                    nomField.setText(rs.getString(1));
+                    prenomField.setText(rs.getString(2));
+                    filiereComboBox.setSelectedItem(rs.getString(3));
+                    niveauComboBox.setSelectedItem(rs.getInt(4));
+                    groupeComboBox.setSelectedItem(rs.getInt(5));
+
+                }
+            }catch (SQLException ex){
+                ex.printStackTrace();
+            }
 
         });
+        modifierButton.addActionListener(e -> {
+            dao.updateEtudiant(new Etudiant(Integer.parseInt(numEtdField.getText()),nomField.getText(),prenomField.getText(),(String)filiereComboBox.getSelectedItem(),(int)niveauComboBox.getSelectedItem(),(int)groupeComboBox.getSelectedItem()));
+            String rq = "UPDATE ETUDIANT SET nom = '"+nomField.getText()+"', prenom = '"+prenomField.getText()+"', filiere = '"+filiereComboBox.getSelectedItem()+"', niveau = "+niveauComboBox.getSelectedItem()+", groupe = "+groupeComboBox.getSelectedItem()+" WHERE id = "+numEtdField.getText()+";";
+            ResultSet rs = dao.selection(rq);
+            model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and e.id = "+numEtdField.getText()+";"));
+            JOptionPane.showMessageDialog(this, "Etudiant modifié");
+        });
+        supprimerButton.addActionListener(e -> {
+            dao.deleteEtudiant(Integer.parseInt(numEtdField.getText()));
+            model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE 7=5;"));
+            JOptionPane.showMessageDialog(this, "Etudiant supprimé");
+            clearInputs();
+        });
+
     }
 
 

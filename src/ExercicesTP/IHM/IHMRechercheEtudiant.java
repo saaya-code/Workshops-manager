@@ -64,6 +64,9 @@ public class IHMRechercheEtudiant extends JInternalFrame {
         model = new TableModelEtudiant(dao.selection(rq), dao);
         jt_Etudiant.setModel(model);
         sp = new JScrollPane(jt_Etudiant);
+        rechercheButton.setEnabled(false);
+        modifierButton.setEnabled(false);
+        supprimerButton.setEnabled(false);
 
     }
 
@@ -185,6 +188,13 @@ public class IHMRechercheEtudiant extends JInternalFrame {
             model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE 7=5;"));
             JOptionPane.showMessageDialog(this, "Etudiant supprimé");
             clearInputs();
+        });
+        numEtdField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                rechercheButton.setEnabled(!numEtdField.getText().isEmpty());
+                supprimerButton.setEnabled(!numEtdField.getText().isEmpty());
+                modifierButton.setEnabled(!numEtdField.getText().isEmpty());
+            }
         });
 
     }

@@ -156,7 +156,7 @@ public class IHMRechercheEtudiant extends JInternalFrame {
     }
 
     private void addEventListeners() {
-       //TODO implement
+
         rechercheButton.addActionListener(e -> {
             String rq = "SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and e.id = "+numEtdField.getText()+";";
             model.updateTableWithNewResultSet(dao.selection(rq));

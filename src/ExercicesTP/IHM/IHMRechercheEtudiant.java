@@ -183,11 +183,40 @@ public class IHMRechercheEtudiant extends JInternalFrame {
             model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and e.id = "+numEtdField.getText()+";"));
             JOptionPane.showMessageDialog(this, "Etudiant modifié");
         });
+        cancelButton.addActionListener(e -> dispose());
         supprimerButton.addActionListener(e -> {
             dao.deleteEtudiant(Integer.parseInt(numEtdField.getText()));
             model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE 7=5;"));
             JOptionPane.showMessageDialog(this, "Etudiant supprimé");
             clearInputs();
+        });
+        supprimerDemandeButton.addActionListener(e -> {
+            // get the selected row
+            int row = jt_Etudiant.getSelectedRow();
+            // get the selected formation
+            String titre = (String) model.getValueAt(row, 0);
+            int numEtud = Integer.parseInt(numEtdField.getText());
+            String lieu = (String) model.getValueAt(row, 1);
+            System.out.println("Num etd : "+ numEtud + " titre : "+titre + " lieu : "+lieu);
+            System.out.println(dao.supprimeDemandePublic(numEtud,lieu,titre));
+            model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and e.id = "+numEtdField.getText()+";"));
+            JOptionPane.showMessageDialog(this, "Demande supprimée");
+        });
+        ajouterDemandeButton.addActionListener(e -> {
+            int numEtud = Integer.parseInt(numEtdField.getText());
+            String titre = (String) demandesBox.getSelectedItem();
+            String rq = "SELECT idF FROM FORMATION WHERE titre = '"+titre+"';";
+            ResultSet rs = dao.selection(rq);
+            try {
+                if(rs.next()){
+                    int idF = rs.getInt(1);
+                    dao.insertDemande(idF,numEtud);
+                    model.updateTableWithNewResultSet(dao.selection("SELECT titre,lieu,datef FROM FORMATION f,demandeetd d,ETUDIANT e WHERE (e.id=d.idEtudiant) and (f.idF = d.idFormation) and e.id = "+numEtdField.getText()+";"));
+                    JOptionPane.showMessageDialog(this, "Demande ajoutée");
+                }
+            }catch (SQLException ex){
+                ex.printStackTrace();
+            }
         });
         numEtdField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {

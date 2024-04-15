@@ -117,6 +117,13 @@ public class Principale extends JFrame {
                 desktop.add(ihmRechercheEtud);
             }
         });
+        menuItemAfficherEtudiant.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                IHMAfficheEtudiant ihmRechercheEtud = new IHMAfficheEtudiant(etudiantDAO);
+                desktop.add(ihmRechercheEtud);
+            }
+        });
 
 
 

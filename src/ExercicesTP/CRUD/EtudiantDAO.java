@@ -141,6 +141,28 @@ public class EtudiantDAO implements EtudiantDaoCRUD{
         }
     }
 
+    public int supprimeDemandePublic(int idEtudiant, String lieu, String titre){
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement("SELECT id FROM demandeetd WHERE IdEtudiant = ? and IdFormation in (SELECT IdF FROM formation WHERE lieu = ? and titre = ?)");
+            ps.setInt(1, idEtudiant);
+            ps.setString(2, lieu);
+            ps.setString(3, titre);
+            ResultSet rs = ps.executeQuery();
+            int result = 0;
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                System.out.println("id : "+id);
+                ps = con.prepareStatement("DELETE FROM demandeetd WHERE id = ?");
+                ps.setInt(1, id);
+                result = ps.executeUpdate();
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public ResultSet selection(String rq){
         try {
             return st.executeQuery(rq);

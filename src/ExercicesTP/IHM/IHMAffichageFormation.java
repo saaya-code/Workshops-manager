@@ -106,8 +106,14 @@ public class IHMAffichageFormation extends JInternalFrame {
             if(!lieuTextField.getText().isEmpty()){
                 rq += "lieu = '"+lieuTextField.getText()+"' AND ";
             }
+            if(certificationCheckbox.isSelected()){
+                rq += "certif = true AND ";
+            }
             rq = rq.substring(0, rq.length()-4);
             model.updateTableWithNewResultSet(formationDAO.selection(rq));
+        });
+        cancelButton.addActionListener((e)->{
+            dispose();
         });
     }
 
